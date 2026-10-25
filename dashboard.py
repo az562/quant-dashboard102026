@@ -5,7 +5,7 @@ st.set_page_config(page_title="Quant Dashboard", layout="wide")
 st.title("Quant Research Dashboard")
 
 # Weekly Zeeberg z Google Sheets (publiczny)
-SHEET_ID = "1iTS_9hQifHtH4SUA9eC8V3-bt9rZfXLpp3IRKkjbGZg"
+SHEET_ID = "1M__bguvpi4LfDXAl29VDVt3IRAWseGEYQSom21bqWZY"
 url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
 
 try:
