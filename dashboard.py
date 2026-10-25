@@ -10,11 +10,13 @@ if lang == "English":
     estimate_label = "Estimated months to equity market peak"
     legend_title = "Legend / indicator explanations"
     load_error = "Could not load data from Google Sheets."
+    change_info = "Latest estimate changes"
 else:
     title = "Quant Research Dashboard"
     estimate_label = "Szacunek miesięcy do szczytu akcji"
     legend_title = "Legenda / wyjaśnienia wskaźników"
     load_error = "Nie udało się wczytać danych z Google Sheets."
+    change_info = "Ostatnie zmiany szacunku"
 
 st.title(title)
 
@@ -23,16 +25,29 @@ url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
 
 try:
     zeeberg = pd.read_csv(url)
+    
     if lang == "English":
         name_map = {
             "Szacunek do szczytu akcji": "Equity peak estimate",
             "Stopa bezrobocia": "Unemployment rate",
         }
         zeeberg["metric"] = zeeberg["metric"].replace(name_map)
-    st.table(zeeberg)
+    
+    # Szacunek NAD tabelą
     estimate = zeeberg[zeeberg["metric"].astype(str).str.contains("Szacunek|Estimate|peak", na=False, case=False)]
     if not estimate.empty:
-        st.metric(estimate_label, estimate.iloc[0].get("months_to_peak", ""))
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.metric(estimate_label, estimate.iloc[0].get("months_to_peak", "—"))
+        with col2:
+            st.caption(change_info)
+            st.write("23.10: 2–4 mies. (bez zmiany vs 22.10)")
+            st.write("22.10: 2–4 mies.")
+            st.write("21.10: skrócony do 2–4 mies.")
+    
+    st.divider()
+    st.table(zeeberg)
+
 except Exception:
     st.info(load_error)
 
