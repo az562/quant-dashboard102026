@@ -40,10 +40,12 @@ try:
     
     st.subheader(changes_title)
     changes = pd.DataFrame({
-        "Data": ["21.10", "22.10", "23.10"],
-        "Szacunek": ["2–4 mies.", "2–4 mies.", "2–4 mies."],
+        "Data": ["19.10", "20.10", "21.10", "22.10", "23.10"],
+        "Szacunek": ["3–7 mies.", "3–6 mies.", "2–4 mies.", "2–4 mies.", "2–4 mies."],
         "Powód": [
-            "Skrócenie po odczytach spreadów i housing",
+            "Skrócenie po odczytach spreadów",
+            "Dalsze skrócenie (housing + spready)",
+            "Skrócenie do 2–4 po wieczornych danych",
             "Bez zmiany",
             "Bez zmiany (utrzymany zakres)"
         ]
@@ -51,7 +53,9 @@ try:
     if lang == "English":
         changes.columns = ["Date", "Estimate", "Reason"]
         changes["Reason"] = [
-            "Shortened after spread and housing data",
+            "Shortened after spread readings",
+            "Further shortened (housing + spreads)",
+            "Cut to 2–4 after evening data",
             "No change",
             "No change (range maintained)"
         ]
