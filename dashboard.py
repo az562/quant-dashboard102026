@@ -25,15 +25,26 @@ st.title(title)
 SHEET_ID = "1M__bguvpi4LfDXAl29VDVt3IRAWseGEYQSom21bqWZY"
 url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
 
-# Mapowanie analogii (możesz rozbudować)
 analogy_map = {
-    "NAHB HMI": "2007 (HMI <30 → szczyt S&P ~4 mies. później)",
-    "CCC OAS": "2007–2008 (wzrost spreadów CCC przed szczytem)",
-    "HY OAS": "2007 (dekompresja spreadów)",
-    "WIG20:HGPLN": "1999 / late-cycle analogie",
+    "LEI": "2006–2007 (LEI słabł przed recesją)",
+    "CEI": "Late-cycle 2007",
+    "LAG": "2007 (LAG przyspieszał względem CEI)",
+    "payrolls": "2007 (spowolnienie zatrudnienia przed szczytem)",
+    "bezrobocia": "2007 (Sahm jeszcze nieaktywna)",
+    "NAHB": "2007 (HMI <30 → szczyt S&P ~4 mies. później)",
     "Housing starts": "2006–2007 (spadki starts przed szczytem)",
+    "Pending": "2006–2007",
+    "Existing home": "2006–2007",
+    "HY OAS": "2007 (dekompresja spreadów)",
+    "CCC": "2007–2008 (wzrost spreadów CCC przed szczytem)",
     "VIX": "2007 (VIX zaczynał rosnąć przed szczytem)",
-    "US LEI": "2006–2007 (LEI słabł przed recesją)",
+    "MOVE": "2007",
+    "WIG20:HGPLN": "1999 / late-cycle analogie",
+    "S&P 500": "2007 (pozycja względem maksimów)",
+    "Nasdaq": "2000 / 2007",
+    "PPI": "Late-cycle 2007–2008",
+    "Retail sales": "2007",
+    "Produkcja przemysłowa": "Late-cycle",
 }
 
 try:
@@ -46,8 +57,15 @@ try:
         }
         zeeberg["metric"] = zeeberg["metric"].replace(name_map)
     
-    # Dodaj kolumnę analogii
-    zeeberg[analogy_col] = zeeberg["metric"].map(analogy_map).fillna("—")
+    def get_analogy(metric_name):
+        if pd.isna(metric_name):
+            return "—"
+        for key, analogy in analogy_map.items():
+            if key.lower() in str(metric_name).lower():
+                return analogy
+        return "—"
+    
+    zeeberg[analogy_col] = zeeberg["metric"].apply(get_analogy)
     
     estimate = zeeberg[zeeberg["metric"].astype(str).str.contains("Szacunek|Estimate|peak", na=False, case=False)]
     if not estimate.empty:
