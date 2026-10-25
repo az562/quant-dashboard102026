@@ -8,15 +8,15 @@ lang = st.radio("Language / Język", ["Polski", "English"], horizontal=True)
 if lang == "English":
     title = "Quant Research Dashboard"
     estimate_label = "Estimated months to equity market peak"
+    changes_title = "Estimate changes"
     legend_title = "Legend / indicator explanations"
     load_error = "Could not load data from Google Sheets."
-    change_info = "Latest estimate changes"
 else:
     title = "Quant Research Dashboard"
     estimate_label = "Szacunek miesięcy do szczytu akcji"
+    changes_title = "Zmiany szacunku"
     legend_title = "Legenda / wyjaśnienia wskaźników"
     load_error = "Nie udało się wczytać danych z Google Sheets."
-    change_info = "Ostatnie zmiany szacunku"
 
 st.title(title)
 
@@ -33,17 +33,29 @@ try:
         }
         zeeberg["metric"] = zeeberg["metric"].replace(name_map)
     
-    # Szacunek NAD tabelą
+    # Szacunek + historia zmian NAD tabelą
     estimate = zeeberg[zeeberg["metric"].astype(str).str.contains("Szacunek|Estimate|peak", na=False, case=False)]
     if not estimate.empty:
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            st.metric(estimate_label, estimate.iloc[0].get("months_to_peak", "—"))
-        with col2:
-            st.caption(change_info)
-            st.write("23.10: 2–4 mies. (bez zmiany vs 22.10)")
-            st.write("22.10: 2–4 mies.")
-            st.write("21.10: skrócony do 2–4 mies.")
+        st.metric(estimate_label, estimate.iloc[0].get("months_to_peak", "—"))
+    
+    st.subheader(changes_title)
+    changes = pd.DataFrame({
+        "Data": ["21.10", "22.10", "23.10"],
+        "Szacunek": ["2–4 mies.", "2–4 mies.", "2–4 mies."],
+        "Powód": [
+            "Skrócenie po odczytach spreadów i housing",
+            "Bez zmiany",
+            "Bez zmiany (utrzymany zakres)"
+        ]
+    })
+    if lang == "English":
+        changes.columns = ["Date", "Estimate", "Reason"]
+        changes["Reason"] = [
+            "Shortened after spread and housing data",
+            "No change",
+            "No change (range maintained)"
+        ]
+    st.table(changes)
     
     st.divider()
     st.table(zeeberg)
