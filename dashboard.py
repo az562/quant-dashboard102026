@@ -12,6 +12,7 @@ if lang == "English":
     legend_title = "Legend / indicator explanations"
     load_error = "Could not load data from Google Sheets."
     analogy_col = "Closest historical analogies"
+    no_analogy = "Brak wyraźnej analogii historycznej (wskaźnik lokalny / zbyt specyficzny / brak porównywalnego precedensu)"
 else:
     title = "Quant Research Dashboard"
     estimate_label = "Szacunek miesięcy do szczytu akcji"
@@ -19,6 +20,7 @@ else:
     legend_title = "Legenda / wyjaśnienia wskaźników"
     load_error = "Nie udało się wczytać danych z Google Sheets."
     analogy_col = "Najbliższe analogie historyczne"
+    no_analogy = "Brak wyraźnej analogii historycznej (wskaźnik lokalny / zbyt specyficzny / brak porównywalnego precedensu)"
 
 st.title(title)
 
@@ -45,6 +47,9 @@ analogy_map = {
     "PPI": "lato 2007–2008",
     "Retail sales": "lato 2007",
     "Produkcja przemysłowa": "lato 2007",
+    "CPI": "lato 2007–2008",
+    "ISM": "2007",
+    "PMI": "2007 (Europa/USA)",
 }
 
 try:
@@ -56,14 +61,15 @@ try:
             "Stopa bezrobocia": "Unemployment rate",
         }
         zeeberg["metric"] = zeeberg["metric"].replace(name_map)
+        no_analogy = "No clear historical analogy (local/specific indicator or no comparable precedent)"
     
     def get_analogy(metric_name):
         if pd.isna(metric_name):
-            return "—"
+            return no_analogy
         for key, analogy in analogy_map.items():
             if key.lower() in str(metric_name).lower():
                 return analogy
-        return "—"
+        return no_analogy
     
     zeeberg[analogy_col] = zeeberg["metric"].apply(get_analogy)
     
