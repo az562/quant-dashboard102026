@@ -39,7 +39,7 @@ try:
     
     st.subheader(changes_title)
     changes = pd.DataFrame({
-        "Data": ["Koniec 1Q 2026", "Koniec 2Q 2026", "Koniec 3Q 2026", "19.10", "20.10", "21.10", "23.10"],
+        "Data": ["31.03.2026", "30.06.2026", "30.09.2026", "19.10.2026", "20.10.2026", "21.10.2026", "23.10.2026"],
         "Szacunek": ["6–9 mies.", "5–8 mies.", "4–7 mies.", "3–7 mies.", "3–6 mies.", "2–4 mies.", "2–4 mies."],
         "Powód": [
             "Wcześniejsza faza cyklu",
