@@ -12,7 +12,8 @@ if lang == "English":
     legend_title = "Legend / indicator explanations"
     load_error = "Could not load data from Google Sheets."
     analogy_col = "Closest historical analogies"
-    no_analogy = "Brak wyraźnej analogii historycznej (wskaźnik lokalny / zbyt specyficzny / brak porównywalnego precedensu)"
+    no_analogy = "No clear historical analogy (local/specific indicator or no comparable precedent)"
+    sheet_name = "Hunter_Zeeberg_EN"
 else:
     title = "Quant Research Dashboard"
     estimate_label = "Szacunek miesięcy do szczytu akcji"
@@ -21,11 +22,12 @@ else:
     load_error = "Nie udało się wczytać danych z Google Sheets."
     analogy_col = "Najbliższe analogie historyczne"
     no_analogy = "Brak wyraźnej analogii historycznej (wskaźnik lokalny / zbyt specyficzny / brak porównywalnego precedensu)"
+    sheet_name = "Arkusz1"
 
 st.title(title)
 
 SHEET_ID = "1M__bguvpi4LfDXAl29VDVt3IRAWseGEYQSom21bqWZY"
-url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
+url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
 
 analogy_map = {
     "LEI": "czerwiec–sierpień 2007",
@@ -55,14 +57,6 @@ analogy_map = {
 try:
     zeeberg = pd.read_csv(url)
     
-    if lang == "English":
-        name_map = {
-            "Szacunek do szczytu akcji": "Equity peak estimate",
-            "Stopa bezrobocia": "Unemployment rate",
-        }
-        zeeberg["metric"] = zeeberg["metric"].replace(name_map)
-        no_analogy = "No clear historical analogy (local/specific indicator or no comparable precedent)"
-    
     def get_analogy(metric_name):
         if pd.isna(metric_name):
             return no_analogy
@@ -73,7 +67,7 @@ try:
     
     zeeberg[analogy_col] = zeeberg["metric"].apply(get_analogy)
     
-    estimate = zeeberg[zeeberg["metric"].astype(str).str.contains("Szacunek|Estimate|peak", na=False, case=False)]
+    estimate = zeeberg[zeeberg["metric"].astype(str).str.contains("Szacunek|Estimate|peak|months", na=False, case=False)]
     if not estimate.empty:
         st.metric(estimate_label, estimate.iloc[0].get("months_to_peak", "—"))
     
@@ -102,6 +96,7 @@ try:
     })
     if lang == "English":
         changes.columns = ["Date", "Estimate", "Reason", "Historical analogy"]
+        changes["Estimate"] = ["6–9 mo.", "5–8 mo.", "4–7 mo.", "3–7 mo.", "3–6 mo.", "2–4 mo.", "2–4 mo."]
         changes["Reason"] = [
             "Earlier cycle phase",
             "Gradual shortening",
@@ -125,7 +120,7 @@ try:
     st.divider()
     st.table(zeeberg)
 
-except Exception:
+except Exception as e:
     st.info(load_error)
 
 st.divider()
