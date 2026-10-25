@@ -49,10 +49,19 @@ try:
             "Dalsze skrócenie (housing + spready)",
             "Skrócenie do 2–4 po wieczornych danych",
             "Bez zmiany (utrzymany zakres)"
+        ],
+        "Analogia": [
+            "Podobnie jak początek 2006",
+            "Zbliżenie do połowy 2006",
+            "Analogia do późnego 2006",
+            "Zbliżenie do konfiguracji z poł. 2007",
+            "Podobieństwo do lipca 2007",
+            "Blisko analogii sierpień–wrzesień 2007",
+            "Utrzymanie analogii late-2007"
         ]
     })
     if lang == "English":
-        changes.columns = ["Date", "Estimate", "Reason"]
+        changes.columns = ["Date", "Estimate", "Reason", "Historical analogy"]
         changes["Reason"] = [
             "Earlier cycle phase",
             "Gradual shortening",
@@ -61,6 +70,15 @@ try:
             "Further shortened (housing + spreads)",
             "Cut to 2–4 after evening data",
             "No change (range maintained)"
+        ]
+        changes["Historical analogy"] = [
+            "Similar to early 2006",
+            "Approaching mid-2006",
+            "Analogy to late 2006",
+            "Approaching mid-2007 setup",
+            "Similarity to July 2007",
+            "Close to Aug–Sep 2007 analogy",
+            "Maintaining late-2007 analogy"
         ]
     st.table(changes)
     
