@@ -21,3 +21,16 @@ except FileNotFoundError:
     st.info("Brak wykresu equity_curve.png — uruchom main.py")
 
 st.caption("Dane z lokalnego pipeline (main.py)")
+
+st.divider()
+st.header("Weekly Zeeberg")
+
+try:
+    zeeberg = pd.read_csv("data/zeeberg_latest.csv")
+    st.dataframe(zeeberg, use_container_width=True, hide_index=True)
+    
+    estimate = zeeberg[zeeberg["metric"].str.contains("Szacunek", na=False)]
+    if not estimate.empty:
+        st.metric("Szacunek miesięcy do szczytu akcji", estimate.iloc[0]["months_to_peak"])
+except FileNotFoundError:
+    st.info("Brak pliku data/zeeberg_latest.csv")
