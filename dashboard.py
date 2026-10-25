@@ -7,7 +7,7 @@ st.title("Quant Research Dashboard")
 # Weekly Zeeberg
 try:
     zeeberg = pd.read_csv("data/zeeberg_latest.csv")
-    st.dataframe(zeeberg, use_container_width=True, hide_index=True)
+    st.table(zeeberg)
     
     estimate = zeeberg[zeeberg["metric"].str.contains("Szacunek", na=False)]
     if not estimate.empty:
