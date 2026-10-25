@@ -11,17 +11,30 @@ if lang == "English":
     changes_title = "Estimate changes"
     legend_title = "Legend / indicator explanations"
     load_error = "Could not load data from Google Sheets."
+    analogy_col = "Closest historical analogies"
 else:
     title = "Quant Research Dashboard"
     estimate_label = "Szacunek miesięcy do szczytu akcji"
     changes_title = "Zmiany szacunku"
     legend_title = "Legenda / wyjaśnienia wskaźników"
     load_error = "Nie udało się wczytać danych z Google Sheets."
+    analogy_col = "Najbliższe analogie historyczne"
 
 st.title(title)
 
 SHEET_ID = "1M__bguvpi4LfDXAl29VDVt3IRAWseGEYQSom21bqWZY"
 url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
+
+# Mapowanie analogii (możesz rozbudować)
+analogy_map = {
+    "NAHB HMI": "2007 (HMI <30 → szczyt S&P ~4 mies. później)",
+    "CCC OAS": "2007–2008 (wzrost spreadów CCC przed szczytem)",
+    "HY OAS": "2007 (dekompresja spreadów)",
+    "WIG20:HGPLN": "1999 / late-cycle analogie",
+    "Housing starts": "2006–2007 (spadki starts przed szczytem)",
+    "VIX": "2007 (VIX zaczynał rosnąć przed szczytem)",
+    "US LEI": "2006–2007 (LEI słabł przed recesją)",
+}
 
 try:
     zeeberg = pd.read_csv(url)
@@ -32,6 +45,9 @@ try:
             "Stopa bezrobocia": "Unemployment rate",
         }
         zeeberg["metric"] = zeeberg["metric"].replace(name_map)
+    
+    # Dodaj kolumnę analogii
+    zeeberg[analogy_col] = zeeberg["metric"].map(analogy_map).fillna("—")
     
     estimate = zeeberg[zeeberg["metric"].astype(str).str.contains("Szacunek|Estimate|peak", na=False, case=False)]
     if not estimate.empty:
