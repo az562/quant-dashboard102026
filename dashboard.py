@@ -13,7 +13,7 @@ if lang == "English":
     load_error = "Could not load data from Google Sheets."
     analogy_col = "Closest historical analogies"
     no_analogy = "No clear historical analogy (local/specific indicator or no comparable precedent)"
-    sheet_name = "Hunter_Zeeberg_EN"
+    url = "https://docs.google.com/spreadsheets/d/1M__bguvpi4LfDXAl29VDVt3IRAWseGEYQSom21bqWZY/gviz/tq?tqx=out:csv&sheet=Hunter_Zeeberg_EN"
 else:
     title = "Quant Research Dashboard"
     estimate_label = "Szacunek miesięcy do szczytu akcji"
@@ -22,12 +22,9 @@ else:
     load_error = "Nie udało się wczytać danych z Google Sheets."
     analogy_col = "Najbliższe analogie historyczne"
     no_analogy = "Brak wyraźnej analogii historycznej (wskaźnik lokalny / zbyt specyficzny / brak porównywalnego precedensu)"
-    sheet_name = "Arkusz1"
+    url = "https://docs.google.com/spreadsheets/d/1M__bguvpi4LfDXAl29VDVt3IRAWseGEYQSom21bqWZY/export?format=csv"
 
 st.title(title)
-
-SHEET_ID = "1M__bguvpi4LfDXAl29VDVt3IRAWseGEYQSom21bqWZY"
-url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
 
 analogy_map = {
     "LEI": "czerwiec–sierpień 2007",
@@ -120,7 +117,7 @@ try:
     st.divider()
     st.table(zeeberg)
 
-except Exception as e:
+except Exception:
     st.info(load_error)
 
 st.divider()
@@ -129,60 +126,46 @@ st.subheader(legend_title)
 if lang == "Polski":
     st.markdown("""
 **Makro USA**
-- **US LEI** (Leading Economic Index) — wskaźnik wyprzedzający Conference Board. Kilka spadków z rzędu historycznie zapowiadało recesję.
-- **US CEI** (Coincident Economic Index) — pokazuje bieżącą kondycję gospodarki (zatrudnienie, dochody, sprzedaż, produkcja).
-- **US LAG** (Lagging Economic Index) — wskaźnik opóźniony. Gdy rośnie szybciej niż CEI, często oznacza późną fazę cyklu.
-- **Nonfarm payrolls** — miesięczna zmiana zatrudnienia poza rolnictwem. Słabe odczyty i rewizje w dół = spowolnienie rynku pracy.
-- **Stopa bezrobocia** — poziom bezrobocia. Reguła Sahm (wzrost o 0,5 pp od minimum) jest klasycznym sygnałem recesji.
+- **US LEI** — Leading Economic Index. Spadki z rzędu = sygnał recesji.
+- **US CEI** — Coincident Economic Index. Bieżąca aktywność.
+- **US LAG** — Lagging Economic Index. Rośnie szybciej niż CEI w late-cycle.
+- **Nonfarm payrolls** — zatrudnienie poza rolnictwem.
+- **Stopa bezrobocia** — reguła Sahm przy +0,5 pp.
 
-**Housing (rynek nieruchomości)**
-- **NAHB HMI** — nastroje deweloperów. Odczyty poniżej 30 historycznie pojawiały się przed szczytami giełd (analogia 2007).
-- **Housing starts / permits** — liczba rozpoczętych budów i wydanych pozwoleń. Spadki często wyprzedzają osłabienie gospodarki.
-- **Pending home sales** — podpisane umowy kupna (wyprzedzają finalne transakcje o 1–2 miesiące).
-- **Existing home sales** — zrealizowana sprzedaż domów na rynku wtórnym.
+**Housing**
+- **NAHB HMI** — nastroje deweloperów (<30 = silne osłabienie).
+- **Housing starts / permits** — budowy i pozwolenia.
+- **Pending / Existing home sales** — umowy i sprzedaż.
 
 **Kredyt i zmienność**
-- **HY OAS** — spread obligacji high-yield. Wzrost oznacza rosnące ryzyko kredytowe.
-- **CCC OAS** — spread najsłabszych obligacji. Nowe maksima cyklu = stres na rynku długu.
-- **Dekompresja CCC–BB** — różnica między spreadami CCC i BB. Powyżej ~11 pp bywa sygnałem ostrzegawczym.
-- **VIX** — indeks zmienności S&P 500 („indeks strachu”). Powyżej 25 = podwyższony risk-off.
-- **MOVE** — odpowiednik VIX dla rynku obligacji.
+- **HY OAS / CCC OAS** — spready high-yield i CCC.
+- **VIX** — indeks strachu (>25 = risk-off).
+- **MOVE** — zmienność obligacji.
 
-**Rynki i surowce**
-- **WIG20:HGPLN** — relacja indeksu WIG20 do ceny miedzi wyrażonej w PLN. Utrzymywanie się powyżej górnej linii kanału jest interpretowane jako sygnał late-cycle.
-- **S&P 500 / Nasdaq** — główne indeksy amerykańskie; ważna pozycja względem średnich kroczących i ostatnich maksimów.
-- **Miedź / Złoto / Ropa** — surowce używane jako proxy cyklu koniunkturalnego i presji inflacyjnej.
-
-**Szacunek**
-- **Szacunek miesięcy do szczytu akcji** — syntetyczna ocena na podstawie agregacji wszystkich powyższych wskaźników. Im krótszy horyzont, tym bliżej potencjalnego szczytu.
+**Rynki**
+- **WIG20:HGPLN** — WIG20 vs miedź w PLN (powyżej kanału = late-cycle).
+- **Szacunek miesięcy do szczytu** — agregacja wskaźników.
 """)
 else:
     st.markdown("""
 **US Macro**
-- **US LEI** (Leading Economic Index) — Conference Board leading indicator. Consecutive declines have historically preceded recessions.
-- **US CEI** (Coincident Economic Index) — reflects current economic conditions (jobs, income, sales, production).
-- **US LAG** (Lagging Economic Index) — lagging indicator. Rising faster than CEI often signals late-cycle.
-- **Nonfarm payrolls** — monthly change in employment. Weak prints and downward revisions indicate labor-market slowing.
-- **Unemployment rate** — jobless rate. The Sahm rule (+0.5 pp from the low) is a classic recession signal.
+- **US LEI** — Leading Economic Index. Consecutive declines signal recession risk.
+- **US CEI** — Coincident Economic Index. Current activity.
+- **US LAG** — Lagging Economic Index. Rises faster than CEI in late-cycle.
+- **Nonfarm payrolls** — employment change.
+- **Unemployment rate** — Sahm rule at +0.5 pp.
 
 **Housing**
-- **NAHB HMI** — homebuilder sentiment. Readings below 30 have historically appeared before equity peaks (2007 analogy).
-- **Housing starts / permits** — new construction and building permits. Declines often lead broader economic weakness.
-- **Pending home sales** — signed purchase contracts (lead existing sales by 1–2 months).
-- **Existing home sales** — completed transactions on the existing-home market.
+- **NAHB HMI** — homebuilder sentiment (<30 = significant weakness).
+- **Housing starts / permits** — construction and permits.
+- **Pending / Existing home sales** — contracts and sales.
 
 **Credit & volatility**
-- **HY OAS** — high-yield bond spread. Rising values mean higher credit risk.
-- **CCC OAS** — spread on the weakest bonds. New cycle highs signal credit stress.
-- **CCC–BB decompression** — gap between CCC and BB spreads. Above ~11 pp has been a warning signal.
-- **VIX** — S&P 500 volatility index (“fear index”). Above 25 indicates elevated risk-off.
-- **MOVE** — bond-market equivalent of the VIX.
+- **HY OAS / CCC OAS** — high-yield and CCC spreads.
+- **VIX** — fear index (>25 = risk-off).
+- **MOVE** — bond volatility.
 
-**Markets & commodities**
-- **WIG20:HGPLN** — WIG20 relative to copper priced in PLN. Staying above the upper channel line is read as a late-cycle signal.
-- **S&P 500 / Nasdaq** — major US indices; position versus moving averages and recent highs matters.
-- **Copper / Gold / Oil** — commodities used as proxies for the business cycle and inflation pressure.
-
-**Estimate**
-- **Months to equity peak** — synthetic assessment based on aggregation of all the above indicators. A shorter horizon means a potential peak is closer.
+**Markets**
+- **WIG20:HGPLN** — WIG20 vs copper in PLN (above channel = late-cycle).
+- **Months to peak estimate** — aggregated signal.
 """)
